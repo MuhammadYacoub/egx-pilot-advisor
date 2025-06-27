@@ -8,12 +8,15 @@ import { PortfolioTracker } from '@/components/Portfolio/PortfolioTracker';
 import { StockAnalyzer } from '@/components/Analysis/StockAnalyzer';
 import { useMarketData } from '@/hooks/useMarketData';
 import { useToast } from '@/hooks/use-toast';
+import { LanguageProvider, useLanguage } from '@/contexts/LanguageContext';
+import { cn } from '@/lib/utils';
 
-const Index = () => {
+const MainContent = () => {
   const [activeView, setActiveView] = useState('dashboard');
   const [selectedStock, setSelectedStock] = useState(null);
   const { marketData, isConnected } = useMarketData();
   const { toast } = useToast();
+  const { isRTL } = useLanguage();
 
   useEffect(() => {
     if (isConnected) {
@@ -40,7 +43,7 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white">
-      <div className="flex h-screen">
+      <div className={cn("flex h-screen", isRTL && "flex-row-reverse")}>
         <Sidebar activeView={activeView} onViewChange={setActiveView} />
         
         <div className="flex-1 flex flex-col overflow-hidden">
@@ -56,6 +59,14 @@ const Index = () => {
         </div>
       </div>
     </div>
+  );
+};
+
+const Index = () => {
+  return (
+    <LanguageProvider>
+      <MainContent />
+    </LanguageProvider>
   );
 };
 
