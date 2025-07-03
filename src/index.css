@@ -7,43 +7,51 @@
 
 @layer base {
   :root {
-    /* Light theme */
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    /* Light theme - Modern & Eye-friendly */
+    --background: 210 20% 98%;
+    --foreground: 215 25% 15%;
 
     --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    --card-foreground: 215 25% 15%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
+    --popover-foreground: 215 25% 15%;
 
-    --primary: 221.2 83.2% 53.3%;
-    --primary-foreground: 210 40% 98%;
+    --primary: 206 100% 50%;
+    --primary-foreground: 0 0% 100%;
 
-    --secondary: 210 40% 96%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
+    --secondary: 210 15% 92%;
+    --secondary-foreground: 215 25% 25%;
 
-    --muted: 210 40% 96%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+    --muted: 210 15% 95%;
+    --muted-foreground: 215 15% 45%;
 
-    --accent: 210 40% 96%;
-    --accent-foreground: 222.2 47.4% 11.2%;
+    --accent: 200 25% 88%;
+    --accent-foreground: 215 25% 25%;
 
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive: 0 75% 55%;
+    --destructive-foreground: 0 0% 100%;
 
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 221.2 83.2% 53.3%;
+    --border: 210 20% 88%;
+    --input: 210 20% 95%;
+    --ring: 206 100% 50%;
 
-    --sidebar-background: 0 0% 98%;
-    --sidebar-foreground: 240 5.9% 10%;
-    --sidebar-primary: 224.3 76.3% 48%;
+    --sidebar-background: 210 25% 96%;
+    --sidebar-foreground: 215 25% 20%;
+    --sidebar-primary: 206 100% 50%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 220 14.3% 95.9%;
-    --sidebar-accent-foreground: 220.9 39.3% 11%;
-    --sidebar-border: 220 13% 91%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    --sidebar-accent: 210 20% 90%;
+    --sidebar-accent-foreground: 215 25% 25%;
+    --sidebar-border: 210 20% 85%;
+    --sidebar-ring: 206 100% 50%;
+
+    /* Financial colors for light mode */
+    --success: 142 76% 36%;
+    --success-foreground: 0 0% 100%;
+    --warning: 38 92% 50%;
+    --warning-foreground: 0 0% 100%;
+    --info: 199 89% 48%;
+    --info-foreground: 0 0% 100%;
 
     --radius: 0.5rem;
   }
@@ -99,23 +107,23 @@
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   }
 
-  /* Custom scrollbar for dark theme */
+  /* Custom scrollbar */
   ::-webkit-scrollbar {
     width: 6px;
     height: 6px;
   }
 
   ::-webkit-scrollbar-track {
-    background: #1e293b;
+    background: hsl(var(--muted));
   }
 
   ::-webkit-scrollbar-thumb {
-    background: #475569;
+    background: hsl(var(--border));
     border-radius: 3px;
   }
 
   ::-webkit-scrollbar-thumb:hover {
-    background: #64748b;
+    background: hsl(var(--accent));
   }
 }
 
@@ -198,22 +206,22 @@
   }
 }
 
-/* Component specific styles */
+/* Component specific styles - Theme aware */
 .trading-card {
-  @apply bg-slate-800/50 backdrop-blur-sm border-slate-700/50 rounded-lg transition-all duration-200 hover:bg-slate-800/70;
+  @apply bg-card backdrop-blur-sm border-border rounded-lg transition-all duration-200 hover:bg-accent/50 shadow-sm;
 }
 
 .opportunity-card {
-  @apply trading-card p-6 hover:border-cyan-500/30 hover:shadow-lg hover:shadow-cyan-500/10;
+  @apply trading-card p-6 hover:border-primary/30 hover:shadow-lg hover:shadow-primary/10;
 }
 
 .metric-card {
-  @apply bg-slate-700/30 rounded-lg p-4 text-center hover:bg-slate-700/50 transition-all duration-200;
+  @apply bg-muted rounded-lg p-4 text-center hover:bg-accent transition-all duration-200 border border-border;
 }
 
 /* Chart container styles */
 .chart-container {
-  @apply bg-slate-800/30 rounded-lg p-4;
+  @apply bg-card rounded-lg p-4 border border-border shadow-sm;
 }
 
 /* Button variants for trading actions */
