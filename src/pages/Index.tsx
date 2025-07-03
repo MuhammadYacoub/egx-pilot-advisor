@@ -9,6 +9,7 @@ import { StockAnalyzer } from '@/components/Analysis/StockAnalyzer';
 import { useMarketData } from '@/hooks/useMarketData';
 import { useToast } from '@/hooks/use-toast';
 import { LanguageProvider, useLanguage } from '@/contexts/LanguageContext';
+import { ThemeProvider } from '@/contexts/ThemeContext';
 import { cn } from '@/lib/utils';
 
 const MainContent = () => {
@@ -42,7 +43,7 @@ const MainContent = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white">
+    <div className="min-h-screen bg-background text-foreground">
       <div className={cn("flex h-screen", isRTL && "flex-row-reverse")}>
         <Sidebar activeView={activeView} onViewChange={setActiveView} />
         
@@ -64,9 +65,11 @@ const MainContent = () => {
 
 const Index = () => {
   return (
-    <LanguageProvider>
-      <MainContent />
-    </LanguageProvider>
+    <ThemeProvider>
+      <LanguageProvider>
+        <MainContent />
+      </LanguageProvider>
+    </ThemeProvider>
   );
 };
 

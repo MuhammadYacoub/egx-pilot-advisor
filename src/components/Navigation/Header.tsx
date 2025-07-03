@@ -4,6 +4,7 @@ import { Search, Bell, Globe, Wifi, WifiOff } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { ThemeToggle } from '@/components/ui/theme-toggle';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { cn } from '@/lib/utils';
 
@@ -109,6 +110,9 @@ export const Header = ({ isConnected, selectedStock, onStockSelect }: HeaderProp
               </div>
             )}
           </div>
+
+          {/* Theme Toggle */}
+          <ThemeToggle />
 
           {/* Language Toggle */}
           <Button
