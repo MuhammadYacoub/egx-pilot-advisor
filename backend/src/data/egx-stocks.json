@@ -1,0 +1,418 @@
+[
+  {
+    "name": "EFG Hermes Holdings SAE",
+    "symbol": "HRHO.CA"
+  },
+  {
+    "name": "Misr Fertilizers Production Co SAE",
+    "symbol": "MFPC.CA"
+  },
+  {
+    "name": "Misr El Gadida for Housing and Development SAE",
+    "symbol": "HELI.CA"
+  },
+  {
+    "name": "Cleopatra Hospital",
+    "symbol": "CLHO.CA"
+  },
+  {
+    "name": "Madinet Nasr for Housing and Development SAE",
+    "symbol": "MASR.CA"
+  },
+  {
+    "name": "Egyptian Chemical Industries",
+    "symbol": "EGCH.CA"
+  },
+  {
+    "name": "Credit Agricole Egypt",
+    "symbol": "CIEB.CA"
+  },
+  {
+    "name": "Fawry Banking and Payment",
+    "symbol": "FWRY.CA"
+  },
+  {
+    "name": "T M G Holding",
+    "symbol": "TMGH.CA"
+  },
+  {
+    "name": "Sidi Kerir Petrochemicals",
+    "symbol": "SKPC.CA"
+  },
+  {
+    "name": "Six of October Development & Invest",
+    "symbol": "OCDI.CA"
+  },
+  {
+    "name": "Tenth of Ramadan for Pharmaceutical",
+    "symbol": "RMDA.CA"
+  },
+  {
+    "name": "Ezz Steel",
+    "symbol": "ESRS.CA"
+  },
+  {
+    "name": "GB AUTO",
+    "symbol": "GBCO.CA"
+  },
+  {
+    "name": "Juhayna Food Industries",
+    "symbol": "JUFO.CA"
+  },
+  {
+    "name": "Qatar Natl Bank",
+    "symbol": "QNBE.CA"
+  },
+  {
+    "name": "Housing & Development Bank",
+    "symbol": "HDBK.CA"
+  },
+  {
+    "name": "Palm Hills Development Company",
+    "symbol": "PHDC.CA"
+  },
+  {
+    "name": "Eastern Tobacco",
+    "symbol": "EAST.CA"
+  },
+  {
+    "name": "E-finance for Digital and Financial Investements",
+    "symbol": "EFIH.CA"
+  },
+  {
+    "name": "Oriental Weavers",
+    "symbol": "ORWE.CA"
+  },
+  {
+    "name": "Egyptian for Tourism Resorts",
+    "symbol": "EGTS.CA"
+  },
+  {
+    "name": "Telecom Egypt",
+    "symbol": "ETEL.CA"
+  },
+  {
+    "name": "Egypt Kuwait Holding Co SAE",
+    "symbol": "EKHOA.CA"
+  },
+  {
+    "name": "Egyptian Kuwaiti Holding",
+    "symbol": "EKHO.CA"
+  },
+  {
+    "name": "Qalaa Holdings SAE",
+    "symbol": "CCAP.CA"
+  },
+  {
+    "name": "Cairo for Investment and Real Estate Development SAE",
+    "symbol": "CIRA.CA"
+  },
+  {
+    "name": "El Sewedy Electric Co SAE",
+    "symbol": "SWDY.CA"
+  },
+  {
+    "name": "Egyptian Iron & Steel",
+    "symbol": "IRON.CA"
+  },
+  {
+    "name": "Commercial International Bank",
+    "symbol": "COMI.CA"
+  },
+  {
+    "name": "Alexandria Containers and goods",
+    "symbol": "ALCN.CA"
+  },
+  {
+    "name": "Ibnsina Pharma Co",
+    "symbol": "ISPH.CA"
+  },
+  {
+    "name": "Emaar Misr for Development SAE",
+    "symbol": "EMFD.CA"
+  },
+  {
+    "name": "Orascom Investment Holding SAE",
+    "symbol": "OIH.CA"
+  },
+  {
+    "name": "Orascom Hotels and Development SAE",
+    "symbol": "ORHD.CA"
+  },
+  {
+    "name": "Orascom Construction Ltd",
+    "symbol": "ORAS.CA"
+  },
+  {
+    "name": "Alexandria Mineral Oils Company",
+    "symbol": "AMOC.CA"
+  },
+  {
+    "name": "Abu Qir Fertilizers and Chemical Industries Co SAE",
+    "symbol": "ABUK.CA"
+  },
+  {
+    "name": "Abu Dhabi Islamic Bank- Egypt",
+    "symbol": "ADIB.CA"
+  },
+  {
+    "name": "Al Khair River for Development Agricultural Investment and Environmental Service",
+    "symbol": "KRDI.CA"
+  },
+  {
+    "name": "Mena Touristic & Real Estate Invest",
+    "symbol": "MENA.CA"
+  },
+  {
+    "name": "Misr Hotels",
+    "symbol": "MHOT.CA"
+  },
+  {
+    "name": "Egypt Aluminum",
+    "symbol": "EGAL.CA"
+  },
+  {
+    "name": "Misr Beni Suef Cement",
+    "symbol": "MBSC.CA"
+  },
+  {
+    "name": "Marseilia Egyptian Gulf Real Estate Investment SAE",
+    "symbol": "MAAL.CA"
+  },
+  {
+    "name": "Egyptian Media Production City",
+    "symbol": "MPRC.CA"
+  },
+  {
+    "name": "Macro Group Pharmaceutical SAE",
+    "symbol": "MCRO.CA"
+  },
+  {
+    "name": "Maridive & oil services",
+    "symbol": "MOIL.CA"
+  },
+  {
+    "name": "Creast Mark for Contracting and Real Estate Development",
+    "symbol": "CRST.CA"
+  },
+  {
+    "name": "Lecico Egypt",
+    "symbol": "LCSW.CA"
+  },
+  {
+    "name": "Misr Cement Co ESC",
+    "symbol": "MCQE.CA"
+  },
+  {
+    "name": "Faisal Islamic Bank of Egypt - EGP",
+    "symbol": "FAIT.CA"
+  },
+  {
+    "name": "Egypt Gas Co SAE",
+    "symbol": "EGAS.CA"
+  },
+  {
+    "name": "Misr National Steel SAE",
+    "symbol": "ATQA.CA"
+  },
+  {
+    "name": "Obour Land for Food Industries",
+    "symbol": "OLFI.CA"
+  },
+  {
+    "name": "Ceramic & Porcelain",
+    "symbol": "PRCL.CA"
+  },
+  {
+    "name": "Sharm Dreams Co. Tourism Investment",
+    "symbol": "SDTI.CA"
+  },
+  {
+    "name": "CI Capital Holding Co SAE",
+    "symbol": "CICH.CA"
+  },
+  {
+    "name": "Speed Medical SAE",
+    "symbol": "SPMD.CA"
+  },
+  {
+    "name": "Zahraa Maadi Investment&Development",
+    "symbol": "ZMID.CA"
+  },
+  {
+    "name": "The Arab Ceramic Ceramica Remas",
+    "symbol": "CERA.CA"
+  },
+  {
+    "name": "Rowad Tourism Co SAE",
+    "symbol": "ROTO.CA"
+  },
+  {
+    "name": "Raya Contact Center Co",
+    "symbol": "RACC.CA"
+  },
+  {
+    "name": "Raya Holding for Financial Investment SAE",
+    "symbol": "RAYA.CA"
+  },
+  {
+    "name": "Dice Sport & Casual Wear",
+    "symbol": "DSCW.CA"
+  },
+  {
+    "name": "Gadwa for Industrial Development",
+    "symbol": "GDWA.CA"
+  },
+  {
+    "name": "Taaleem Management Services SAE",
+    "symbol": "TALM.CA"
+  },
+  {
+    "name": "B Investments Holding SAE",
+    "symbol": "BINV.CA"
+  },
+  {
+    "name": "Faisal Islamic Bank of Egypt - USD",
+    "symbol": "FAITA.CA"
+  },
+  {
+    "name": "Beltone Financial Holding",
+    "symbol": "BTFH.CA"
+  },
+  {
+    "name": "Prime Holding",
+    "symbol": "PRMH.CA"
+  },
+  {
+    "name": "Pioneer Properties for Urban Development",
+    "symbol": "PRDC.CA"
+  },
+  {
+    "name": "Paint & Chemicals Industries",
+    "symbol": "PACH.CA"
+  },
+  {
+    "name": "Industrial Engineering Co",
+    "symbol": "ENGC.CA"
+  },
+  {
+    "name": "Egyptian Transport & Commercial Services Co SAE",
+    "symbol": "ETRS.CA"
+  },
+  {
+    "name": "Egyptian International Pharma",
+    "symbol": "PHAR.CA"
+  },
+  {
+    "name": "MM Group for Industry",
+    "symbol": "MTIE.CA"
+  },
+  {
+    "name": "Naeem Holding",
+    "symbol": "NAHO.CA"
+  },
+  {
+    "name": "Nasr Company for Civil Works",
+    "symbol": "NCCW.CA"
+  },
+  {
+    "name": "Arab Moltaka Investments Co",
+    "symbol": "AMIA.CA"
+  },
+  {
+    "name": "Arab Developers Holding",
+    "symbol": "ARAB.CA"
+  },
+  {
+    "name": "Egyptians Housing Development",
+    "symbol": "EHDR.CA"
+  },
+  {
+    "name": "The Egyptian Modern Education Systems",
+    "symbol": "MOED.CA"
+  },
+  {
+    "name": "Export Development Bank of Egypt",
+    "symbol": "EXPA.CA"
+  },
+  {
+    "name": "United Housing & Development",
+    "symbol": "UNIT.CA"
+  },
+  {
+    "name": "Egyptian Financial & Industrial",
+    "symbol": "EFIC.CA"
+  },
+  {
+    "name": "Canal Shipping Agencies",
+    "symbol": "CSAG.CA"
+  },
+  {
+    "name": "Cairo Poultry",
+    "symbol": "POUL.CA"
+  },
+  {
+    "name": "El Kahera Housing",
+    "symbol": "ELKA.CA"
+  },
+  {
+    "name": "Arabian Cement Co SAE",
+    "symbol": "ARCC.CA"
+  },
+  {
+    "name": "Arab Cotton Ginning",
+    "symbol": "ACGC.CA"
+  },
+  {
+    "name": "United Arab Shipping",
+    "symbol": "UASG.CA"
+  },
+  {
+    "name": "El Shams Housing & Urbanization",
+    "symbol": "ELSH.CA"
+  },
+  {
+    "name": "Delta Sugar",
+    "symbol": "SUGR.CA"
+  },
+  {
+    "name": "Al Ezz Ceramic & Porcelain",
+    "symbol": "ECAP.CA"
+  },
+  {
+    "name": "Ismailia Misr Poultry",
+    "symbol": "ISMA.CA"
+  },
+  {
+    "name": "Ismailia Development & Real Estate",
+    "symbol": "IDRE.CA"
+  },
+  {
+    "name": "El Ahli Investment and Development",
+    "symbol": "AFDI.CA"
+  },
+  {
+    "name": "Arabia Investments Holding SAE",
+    "symbol": "AIH.CA"
+  },
+  {
+    "name": "Edita Food Industries SAE",
+    "symbol": "EFID.CA"
+  },
+  {
+    "name": "Al Tawfeek Leasing Company SAE",
+    "symbol": "ATLC.CA"
+  },
+  {
+    "name": "Orascom Financial Holding SAE",
+    "symbol": "OFH.CA"
+  },
+  {
+    "name": "ASEC Co for Mining SAE",
+    "symbol": "ASCM.CA"
+  },
+  {
+    "name": "AJWA for Food Industries company",
+    "symbol": "AJWA.CA"
+  }
+]

@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EGX Pilot Advisor - Test Integration</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+    </style>
+</head>
+<body class="bg-gray-100 p-6">
+    <div class="max-w-4xl mx-auto">
+        <h1 class="text-3xl font-bold text-center mb-8 text-blue-600">
+            🚀 EGX Pilot Advisor - اختبار التكامل
+        </h1>
+        
+        <div class="grid md:grid-cols-2 gap-6">
+            <!-- Test User Login -->
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <h2 class="text-xl font-semibold mb-4 text-gray-800">
+                    👤 اختبار تسجيل دخول المستخدم
+                </h2>
+                <div class="space-y-4">
+                    <input 
+                        type="email" 
+                        id="testEmail" 
+                        placeholder="البريد الإلكتروني" 
+                        value="test@example.com"
+                        class="w-full p-3 border border-gray-300 rounded-md"
+                    >
+                    <input 
+                        type="text" 
+                        id="testName" 
+                        placeholder="الاسم" 
+                        value="Test User"
+                        class="w-full p-3 border border-gray-300 rounded-md"
+                    >
+                    <button 
+                        onclick="testUserLogin()" 
+                        class="w-full bg-blue-500 text-white p-3 rounded-md hover:bg-blue-600 transition"
+                    >
+                        إنشاء مستخدم تجريبي
+                    </button>
+                </div>
+                <div id="loginResult" class="mt-4"></div>
+            </div>
+
+            <!-- Test Portfolio -->
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <h2 class="text-xl font-semibold mb-4 text-gray-800">
+                    📊 اختبار إدارة المحافظ
+                </h2>
+                <div class="space-y-4">
+                    <button 
+                        onclick="testGetPortfolios()" 
+                        class="w-full bg-green-500 text-white p-3 rounded-md hover:bg-green-600 transition"
+                        disabled
+                        id="portfolioBtn"
+                    >
+                        جلب المحافظ
+                    </button>
+                    <button 
+                        onclick="testCreatePortfolio()" 
+                        class="w-full bg-purple-500 text-white p-3 rounded-md hover:bg-purple-600 transition"
+                        disabled
+                        id="createPortfolioBtn"
+                    >
+                        إنشاء محفظة جديدة
+                    </button>
+                </div>
+                <div id="portfolioResult" class="mt-4"></div>
+            </div>
+        </div>
+
+        <!-- Results Section -->
+        <div class="mt-8 bg-white rounded-lg shadow-md p-6">
+            <h2 class="text-xl font-semibold mb-4 text-gray-800">
+                📋 نتائج الاختبار
+            </h2>
+            <div id="testResults" class="space-y-2"></div>
+        </div>
+
+        <!-- API Status -->
+        <div class="mt-6 bg-white rounded-lg shadow-md p-6">
+            <h2 class="text-xl font-semibold mb-4 text-gray-800">
+                🔧 حالة API
+            </h2>
+            <div id="apiStatus" class="space-y-2"></div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:3001/api';
+        let authToken = null;
+
+        // Test API Health
+        async function testApiHealth() {
+            try {
+                const response = await fetch(`${API_BASE}/health`);
+                const data = await response.json();
+                
+                if (data.success) {
+                    addResult('✅ API Health: Working', 'text-green-600');
+                    document.getElementById('apiStatus').innerHTML = `
+                        <p class="text-green-600">✅ Backend API: ${data.message}</p>
+                        <p class="text-gray-600">Version: ${data.version}</p>
+                        <p class="text-gray-600">Timestamp: ${data.timestamp}</p>
+                    `;
+                } else {
+                    addResult('❌ API Health: Failed', 'text-red-600');
+                }
+            } catch (error) {
+                addResult(`❌ API Health Error: ${error.message}`, 'text-red-600');
+                document.getElementById('apiStatus').innerHTML = `
+                    <p class="text-red-600">❌ Backend API: Connection Failed</p>
+                    <p class="text-gray-600">Error: ${error.message}</p>
+                `;
+            }
+        }
+
+        // Test User Login
+        async function testUserLogin() {
+            const email = document.getElementById('testEmail').value;
+            const name = document.getElementById('testName').value;
+
+            try {
+                const response = await fetch(`${API_BASE}/auth/test-user`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ email, name }),
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    authToken = data.data.tokens.accessToken;
+                    addResult('✅ User Login: Success', 'text-green-600');
+                    
+                    document.getElementById('loginResult').innerHTML = `
+                        <div class="p-3 bg-green-100 border border-green-300 rounded">
+                            <p class="text-green-800 font-semibold">تم إنشاء المستخدم بنجاح!</p>
+                            <p class="text-sm text-green-600">ID: ${data.data.user.id}</p>
+                            <p class="text-sm text-green-600">Email: ${data.data.user.email}</p>
+                        </div>
+                    `;
+
+                    // Enable portfolio buttons
+                    document.getElementById('portfolioBtn').disabled = false;
+                    document.getElementById('createPortfolioBtn').disabled = false;
+                } else {
+                    addResult('❌ User Login: Failed', 'text-red-600');
+                    document.getElementById('loginResult').innerHTML = `
+                        <div class="p-3 bg-red-100 border border-red-300 rounded">
+                            <p class="text-red-800">فشل في إنشاء المستخدم: ${data.error}</p>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                addResult(`❌ User Login Error: ${error.message}`, 'text-red-600');
+                document.getElementById('loginResult').innerHTML = `
+                    <div class="p-3 bg-red-100 border border-red-300 rounded">
+                        <p class="text-red-800">خطأ في الاتصال: ${error.message}</p>
+                    </div>
+                `;
+            }
+        }
+
+        // Test Get Portfolios
+        async function testGetPortfolios() {
+            if (!authToken) {
+                addResult('❌ Portfolio: No Auth Token', 'text-red-600');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE}/portfolio`, {
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`,
+                    },
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    addResult('✅ Get Portfolios: Success', 'text-green-600');
+                    
+                    document.getElementById('portfolioResult').innerHTML = `
+                        <div class="p-3 bg-green-100 border border-green-300 rounded">
+                            <p class="text-green-800 font-semibold">تم جلب ${data.count} محفظة</p>
+                            ${data.data.map(p => `
+                                <div class="mt-2 p-2 bg-white rounded">
+                                    <p class="font-medium">${p.name}</p>
+                                    <p class="text-sm text-gray-600">القيمة: $${p.currentValue.toLocaleString()}</p>
+                                    <p class="text-sm text-gray-600">المراكز: ${p.stats.positionsCount}</p>
+                                </div>
+                            `).join('')}
+                        </div>
+                    `;
+                } else {
+                    addResult('❌ Get Portfolios: Failed', 'text-red-600');
+                }
+            } catch (error) {
+                addResult(`❌ Portfolio Error: ${error.message}`, 'text-red-600');
+            }
+        }
+
+        // Test Create Portfolio
+        async function testCreatePortfolio() {
+            if (!authToken) {
+                addResult('❌ Create Portfolio: No Auth Token', 'text-red-600');
+                return;
+            }
+
+            const portfolioData = {
+                name: `Test Portfolio ${Date.now()}`,
+                description: 'Portfolio created by integration test',
+                portfolioType: 'paper',
+                initialCapital: 50000
+            };
+
+            try {
+                const response = await fetch(`${API_BASE}/portfolio`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${authToken}`,
+                    },
+                    body: JSON.stringify(portfolioData),
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    addResult('✅ Create Portfolio: Success', 'text-green-600');
+                } else {
+                    addResult('❌ Create Portfolio: Failed', 'text-red-600');
+                }
+            } catch (error) {
+                addResult(`❌ Create Portfolio Error: ${error.message}`, 'text-red-600');
+            }
+        }
+
+        // Helper function to add results
+        function addResult(message, className) {
+            const resultsDiv = document.getElementById('testResults');
+            const resultElement = document.createElement('p');
+            resultElement.className = className + ' text-sm';
+            resultElement.textContent = `${new Date().toLocaleTimeString()}: ${message}`;
+            resultsDiv.appendChild(resultElement);
+        }
+
+        // Initialize
+        window.onload = function() {
+            testApiHealth();
+        };
+    </script>
+</body>
+</html>

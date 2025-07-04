@@ -1,0 +1,230 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlserver"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                  String       @id @default(cuid())
+  googleId            String       @unique @map("google_id")
+  email               String       @unique
+  name                String
+  picture             String?
+  preferredLanguage   String       @default("en") @map("preferred_language")
+  theme               String       @default("dark")
+  emailNotifications  Boolean      @default(true) @map("email_notifications")
+  alertPreferences    String?      @map("alert_preferences") // JSON
+  isPaperTrading      Boolean      @default(true) @map("is_paper_trading")
+  createdAt           DateTime     @default(now()) @map("created_at")
+  updatedAt           DateTime     @updatedAt @map("updated_at")
+
+  // Relations
+  portfolios          Portfolio[]
+  userAlerts          UserAlert[]
+  emailLogs           EmailLog[]
+  watchlists          Watchlist[]
+
+  @@map("users")
+}
+
+model Portfolio {
+  id              String            @id @default(cuid())
+  userId          String            @map("user_id")
+  name            String
+  description     String?
+  portfolioType   String            @default("paper") @map("portfolio_type") // 'paper' or 'real'
+  initialCapital  Decimal           @map("initial_capital") @db.Decimal(18, 2)
+  currentValue    Decimal           @map("current_value") @db.Decimal(18, 2)
+  cashBalance     Decimal           @map("cash_balance") @db.Decimal(18, 2)
+  totalPnl        Decimal           @default(0) @map("total_pnl") @db.Decimal(18, 2)
+  dailyPnl        Decimal           @default(0) @map("daily_pnl") @db.Decimal(18, 2)
+  isDefault       Boolean           @default(false) @map("is_default")
+  createdAt       DateTime          @default(now()) @map("created_at")
+  updatedAt       DateTime          @updatedAt @map("updated_at")
+
+  // Relations
+  user            User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  positions       Position[]
+  transactions    Transaction[]
+
+  @@map("portfolios")
+}
+
+model Position {
+  id              String      @id @default(cuid())
+  portfolioId     String      @map("portfolio_id")
+  symbol          String
+  companyName     String?     @map("company_name")
+  quantity        Decimal     @db.Decimal(18, 4)
+  avgCost         Decimal     @map("avg_cost") @db.Decimal(10, 4)
+  currentPrice    Decimal?    @map("current_price") @db.Decimal(10, 4)
+  marketValue     Decimal?    @map("market_value") @db.Decimal(18, 2)
+  unrealizedPnl   Decimal?    @map("unrealized_pnl") @db.Decimal(18, 2)
+  realizedPnl     Decimal     @default(0) @map("realized_pnl") @db.Decimal(18, 2)
+  sector          String?
+  purchaseDate    DateTime    @default(now()) @map("purchase_date")
+  updatedAt       DateTime    @updatedAt @map("updated_at")
+
+  // Relations
+  portfolio       Portfolio   @relation(fields: [portfolioId], references: [id], onDelete: Cascade)
+
+  @@map("positions")
+}
+
+model Transaction {
+  id                String      @id @default(cuid())
+  portfolioId       String      @map("portfolio_id")
+  symbol            String
+  transactionType   String      @map("transaction_type") // 'BUY' or 'SELL'
+  quantity          Decimal     @db.Decimal(18, 4)
+  price             Decimal     @db.Decimal(10, 4)
+  commission        Decimal     @default(0) @db.Decimal(10, 4)
+  totalAmount       Decimal     @map("total_amount") @db.Decimal(18, 2)
+  transactionDate   DateTime    @default(now()) @map("transaction_date")
+
+  // Relations
+  portfolio         Portfolio   @relation(fields: [portfolioId], references: [id], onDelete: Cascade)
+
+  @@map("transactions")
+}
+
+model Watchlist {
+  id          String      @id @default(cuid())
+  userId      String      @map("user_id")
+  name        String
+  symbols     String?     // JSON array of symbols
+  createdAt   DateTime    @default(now()) @map("created_at")
+  updatedAt   DateTime    @updatedAt @map("updated_at")
+
+  // Relations
+  user        User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("watchlists")
+}
+
+model HistoricalData {
+  id            BigInt      @id @default(autoincrement())
+  symbol        String
+  dateTime      DateTime    @map("date_time")
+  openPrice     Decimal?    @map("open_price") @db.Decimal(10, 4)
+  highPrice     Decimal?    @map("high_price") @db.Decimal(10, 4)
+  lowPrice      Decimal?    @map("low_price") @db.Decimal(10, 4)
+  closePrice    Decimal?    @map("close_price") @db.Decimal(10, 4)
+  volume        BigInt?
+  adjustedClose Decimal?    @map("adjusted_close") @db.Decimal(10, 4)
+
+  @@index([symbol, dateTime])
+  @@map("historical_data")
+}
+
+model MarketDataCache {
+  symbol              String      @id
+  companyName         String?     @map("company_name")
+  companyNameAr       String?     @map("company_name_ar")
+  currentPrice        Decimal?    @map("current_price") @db.Decimal(10, 4)
+  previousClose       Decimal?    @map("previous_close") @db.Decimal(10, 4)
+  priceChange         Decimal?    @map("price_change") @db.Decimal(10, 4)
+  priceChangePercent  Decimal?    @map("price_change_percent") @db.Decimal(8, 4)
+  volume              BigInt?
+  avgVolume           BigInt?     @map("avg_volume")
+  marketCap           Decimal?    @map("market_cap") @db.Decimal(20, 2)
+  sector              String?
+  sectorAr            String?     @map("sector_ar")
+  lastUpdated         DateTime    @default(now()) @map("last_updated")
+  isActive            Boolean     @default(true) @map("is_active")
+
+  @@map("market_data_cache")
+}
+
+model TechnicalIndicator {
+  id                BigInt      @id @default(autoincrement())
+  symbol            String
+  timeframe         String?     // '1D', '1W', '1M'
+  rsi14             Decimal?    @map("rsi_14") @db.Decimal(8, 4)
+  macdLine          Decimal?    @map("macd_line") @db.Decimal(10, 6)
+  macdSignal        Decimal?    @map("macd_signal") @db.Decimal(10, 6)
+  macdHistogram     Decimal?    @map("macd_histogram") @db.Decimal(10, 6)
+  ema20             Decimal?    @map("ema_20") @db.Decimal(10, 4)
+  ema50             Decimal?    @map("ema_50") @db.Decimal(10, 4)
+  bollingerUpper    Decimal?    @map("bollinger_upper") @db.Decimal(10, 4)
+  bollingerMiddle   Decimal?    @map("bollinger_middle") @db.Decimal(10, 4)
+  bollingerLower    Decimal?    @map("bollinger_lower") @db.Decimal(10, 4)
+  supportLevel      Decimal?    @map("support_level") @db.Decimal(10, 4)
+  resistanceLevel   Decimal?    @map("resistance_level") @db.Decimal(10, 4)
+  overallSignal     String?     @map("overall_signal") // 'BUY', 'SELL', 'NEUTRAL'
+  signalStrength    Decimal?    @map("signal_strength") @db.Decimal(4, 2)
+  calculatedAt      DateTime    @default(now()) @map("calculated_at")
+
+  @@index([symbol, timeframe])
+  @@map("technical_indicators")
+}
+
+model FundamentalData {
+  symbol            String      @id
+  peRatio           Decimal?    @map("pe_ratio") @db.Decimal(8, 2)
+  pbRatio           Decimal?    @map("pb_ratio") @db.Decimal(8, 2)
+  roe               Decimal?    @db.Decimal(8, 4)
+  roa               Decimal?    @db.Decimal(8, 4)
+  debtToEquity      Decimal?    @map("debt_to_equity") @db.Decimal(8, 4)
+  currentRatio      Decimal?    @map("current_ratio") @db.Decimal(8, 4)
+  revenueGrowth     Decimal?    @map("revenue_growth") @db.Decimal(8, 4)
+  earningsGrowth    Decimal?    @map("earnings_growth") @db.Decimal(8, 4)
+  dividendYield     Decimal?    @map("dividend_yield") @db.Decimal(8, 4)
+  fundamentalScore  Decimal?    @map("fundamental_score") @db.Decimal(4, 2) // 0 to 100
+  lastUpdated       DateTime    @default(now()) @map("last_updated")
+
+  @@map("fundamental_data")
+}
+
+model UserAlert {
+  id              String      @id @default(cuid())
+  userId          String      @map("user_id")
+  alertType       String      @map("alert_type") // 'price_target', 'portfolio_alert', 'opportunity', 'technical_signal'
+  symbol          String?
+  alertCondition  String?     @map("alert_condition") // JSON
+  message         String?
+  messageAr       String?     @map("message_ar")
+  isActive        Boolean     @default(true) @map("is_active")
+  isTriggered     Boolean     @default(false) @map("is_triggered")
+  triggerCount    Int         @default(0) @map("trigger_count")
+  emailSent       Boolean     @default(false) @map("email_sent")
+  createdAt       DateTime    @default(now()) @map("created_at")
+  triggeredAt     DateTime?   @map("triggered_at")
+
+  // Relations
+  user            User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("user_alerts")
+}
+
+model EmailLog {
+  id              BigInt      @id @default(autoincrement())
+  userId          String?     @map("user_id")
+  emailType       String      @map("email_type") // 'alert', 'analysis_report', 'portfolio_summary'
+  recipientEmail  String      @map("recipient_email")
+  subject         String
+  status          String      // 'sent', 'failed', 'pending'
+  errorMessage    String?     @map("error_message")
+  sentAt          DateTime    @default(now()) @map("sent_at")
+
+  // Relations
+  user            User?       @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@map("email_logs")
+}
+
+model SystemMetric {
+  id            BigInt      @id @default(autoincrement())
+  metricType    String      @map("metric_type")
+  metricValue   Decimal     @map("metric_value") @db.Decimal(18, 4)
+  details       String?
+  recordedAt    DateTime    @default(now()) @map("recorded_at")
+
+  @@map("system_metrics")
+}

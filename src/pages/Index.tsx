@@ -5,11 +5,13 @@ import { Sidebar } from '@/components/Navigation/Sidebar';
 import { Header } from '@/components/Navigation/Header';
 import { OpportunityScanner } from '@/components/OpportunityScanner/OpportunityScanner';
 import { PortfolioTracker } from '@/components/Portfolio/PortfolioTracker';
+import EnhancedPortfolioTracker from '@/components/Portfolio/EnhancedPortfolioTracker';
 import { StockAnalyzer } from '@/components/Analysis/StockAnalyzer';
 import { useMarketData } from '@/hooks/useMarketData';
 import { useToast } from '@/hooks/use-toast';
 import { LanguageProvider, useLanguage } from '@/contexts/LanguageContext';
 import { ThemeProvider } from '@/contexts/ThemeContext';
+import { useAuth } from '@/contexts/AuthContext';
 import { cn } from '@/lib/utils';
 
 const MainContent = () => {
@@ -18,6 +20,7 @@ const MainContent = () => {
   const { marketData, isConnected } = useMarketData();
   const { toast } = useToast();
   const { isRTL } = useLanguage();
+  const { user } = useAuth();
 
   useEffect(() => {
     if (isConnected) {
@@ -29,12 +32,19 @@ const MainContent = () => {
     }
   }, [isConnected, toast]);
 
+  // Auto switch to portfolio view for authenticated users (only once)
+  useEffect(() => {
+    if (user && activeView === 'dashboard') {
+      setActiveView('portfolio');
+    }
+  }, [user]); // إزالة activeView من dependencies لمنع الحلقة
+
   const renderActiveView = () => {
     switch (activeView) {
       case 'opportunities':
         return <OpportunityScanner onStockSelect={setSelectedStock} />;
       case 'portfolio':
-        return <PortfolioTracker />;
+        return <EnhancedPortfolioTracker />;
       case 'analysis':
         return <StockAnalyzer selectedStock={selectedStock} />;
       default:
