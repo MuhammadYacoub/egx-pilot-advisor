@@ -34,8 +34,11 @@ const MainContent = () => {
 
   // Auto switch to portfolio view for authenticated users (only once)
   useEffect(() => {
+    // Keep dashboard as default view regardless of authentication
+    // Portfolio can be accessed via sidebar navigation
     if (user && activeView === 'dashboard') {
-      setActiveView('portfolio');
+      // Don't auto-switch anymore - let user choose
+      // setActiveView('portfolio');
     }
   }, [user]); // إزالة activeView من dependencies لمنع الحلقة
 

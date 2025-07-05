@@ -55,6 +55,11 @@ export const getMarketStatus = () => {
 
 // Format EGX symbol for Yahoo Finance (add .CA suffix if not present)
 export const formatEGXSymbol = (symbol: string): string => {
+  // Don't modify index symbols that start with ^
+  if (symbol.startsWith('^')) {
+    return symbol;
+  }
+  
   if (symbol.endsWith('.CA')) {
     return symbol;
   }
@@ -63,6 +68,10 @@ export const formatEGXSymbol = (symbol: string): string => {
 
 // Clean EGX symbol (remove .CA suffix)
 export const cleanEGXSymbol = (symbol: string): string => {
+  // Don't modify index symbols that start with ^
+  if (symbol.startsWith('^')) {
+    return symbol;
+  }
   return symbol.replace('.CA', '');
 };
 

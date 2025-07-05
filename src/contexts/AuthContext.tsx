@@ -40,29 +40,35 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     let isMounted = true; // Flag to prevent state updates if component unmounts
     
     const loadProfile = async () => {
-      const token = getAuthToken();
-      if (token && isMounted) {
-        try {
-          const response = await authApi.getProfile();
-          if (response.success && response.data && isMounted) {
-            setUser(response.data);
-          } else {
-            // Invalid token, clear it
+      try {
+        const token = getAuthToken();
+        if (token && isMounted) {
+          try {
+            const response = await authApi.getProfile();
+            if (response.success && response.data && isMounted) {
+              setUser(response.data);
+            } else {
+              // Invalid token, clear it
+              if (isMounted) {
+                setAuthToken(null);
+                setUser(null);
+              }
+            }
+          } catch (error) {
+            console.error('Failed to load user profile:', error);
             if (isMounted) {
               setAuthToken(null);
               setUser(null);
             }
           }
-        } catch (error) {
-          console.error('Failed to load user profile:', error);
-          if (isMounted) {
-            setAuthToken(null);
-            setUser(null);
-          }
         }
-      }
-      if (isMounted) {
-        setIsLoading(false);
+      } catch (error) {
+        console.error('Error in loadProfile:', error);
+      } finally {
+        // Always set loading to false, regardless of token presence
+        if (isMounted) {
+          setIsLoading(false);
+        }
       }
     };
 

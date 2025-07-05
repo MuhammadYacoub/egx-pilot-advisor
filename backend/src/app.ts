@@ -195,30 +195,31 @@ app.use('*', (req, res) => {
 const gracefulShutdown = async (signal: string) => {
   console.log(`📴 Received ${signal}. Starting graceful shutdown...`);
   
+  // Give a small delay for connections to close, then force exit
+  setTimeout(() => {
+    console.log('🚪 Forcing shutdown after timeout...');
+    process.exit(0);
+  }, 1500); // 1.5 second timeout
+
   // Close HTTP server
-  httpServer.close(() => {
+  httpServer.close(async () => {
     console.log('🔌 HTTP server closed');
+    
+    // Disconnect from database
+    try {
+      await prisma.$disconnect();
+      console.log('🗄️ Database disconnected');
+    } catch (error) {
+      console.error('❌ Error disconnecting from database:', error);
+    }
+    
+    // Clear cache
+    cache.destroy();
+    console.log('🧹 Cache cleared');
+    
+    console.log('✅ Graceful shutdown completed');
+    process.exit(0);
   });
-  
-  // Close Socket.IO server
-  io.close(() => {
-    console.log('🔌 Socket.IO server closed');
-  });
-  
-  // Disconnect from database
-  try {
-    await prisma.$disconnect();
-    console.log('🗄️ Database disconnected');
-  } catch (error) {
-    console.error('❌ Error disconnecting from database:', error);
-  }
-  
-  // Clear cache
-  cache.destroy();
-  console.log('🧹 Cache cleared');
-  
-  console.log('✅ Graceful shutdown completed');
-  process.exit(0);
 };
 
 process.on('SIGTERM', () => gracefulShutdown('SIGTERM'));
