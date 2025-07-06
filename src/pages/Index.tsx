@@ -16,8 +16,9 @@ import { cn } from '@/lib/utils';
 
 const MainContent = () => {
   const [activeView, setActiveView] = useState('dashboard');
-  const [selectedStock, setSelectedStock] = useState(null);
-  const { marketData, isConnected } = useMarketData();
+  const [selectedStock, setSelectedStock] = useState<any>(null);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const { isConnected } = useMarketData();
   const { toast } = useToast();
   const { isRTL } = useLanguage();
   const { user } = useAuth();
@@ -42,6 +43,15 @@ const MainContent = () => {
     }
   }, [user]); // إزالة activeView من dependencies لمنع الحلقة
 
+  const handleMobileMenuToggle = () => {
+    setIsMobileMenuOpen(!isMobileMenuOpen);
+  };
+
+  const handleViewChange = (view: string) => {
+    setActiveView(view);
+    setIsMobileMenuOpen(false); // Close mobile menu when view changes
+  };
+
   const renderActiveView = () => {
     switch (activeView) {
       case 'opportunities':
@@ -51,23 +61,42 @@ const MainContent = () => {
       case 'analysis':
         return <StockAnalyzer selectedStock={selectedStock} />;
       default:
-        return <TradingDashboard marketData={marketData} onStockSelect={setSelectedStock} />;
+        return <TradingDashboard onStockSelect={setSelectedStock} />;
     }
   };
 
   return (
     <div className="min-h-screen bg-background text-foreground">
-      <div className={cn("flex h-screen", isRTL && "flex-row-reverse")}>
-        <Sidebar activeView={activeView} onViewChange={setActiveView} />
+      <div className={cn("flex h-screen", isRTL ? "flex-row" : "flex-row-reverse")}>
+        {/* Sidebar - على اليمين في العربية، اليسار في الإنجليزية */}
+        <Sidebar 
+          activeView={activeView} 
+          onViewChange={handleViewChange}
+          isMobileMenuOpen={isMobileMenuOpen}
+          onMobileMenuClose={() => setIsMobileMenuOpen(false)}
+        />
+        
+        {/* Mobile Overlay */}
+        {isMobileMenuOpen && (
+          <div 
+            className="fixed inset-0 bg-black/50 z-30 md:hidden" 
+            onClick={() => setIsMobileMenuOpen(false)}
+            style={{ 
+              zIndex: 35  // تحت الـ sidebar لكن فوق باقي المحتوى
+            }}
+          />
+        )}
         
         <div className="flex-1 flex flex-col overflow-hidden">
           <Header 
             isConnected={isConnected} 
             selectedStock={selectedStock}
             onStockSelect={setSelectedStock}
+            onMobileMenuToggle={handleMobileMenuToggle}
+            isMobileMenuOpen={isMobileMenuOpen}
           />
           
-          <main className="flex-1 overflow-auto p-6">
+          <main className="flex-1 overflow-auto p-4 sm:p-6 bg-background">
             {renderActiveView()}
           </main>
         </div>

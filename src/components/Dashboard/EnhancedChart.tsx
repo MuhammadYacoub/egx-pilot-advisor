@@ -51,18 +51,24 @@ export const EnhancedChart = ({ symbol, currentPrice }: EnhancedChartProps) => {
         const result = await response.json();
         if (!result.success) throw new Error(result.message || 'خطأ في البيانات');
         
+        // تحقق من وجود البيانات بشكل صحيح
+        const historicalData = result.data || result || [];
+        if (!Array.isArray(historicalData)) {
+          throw new Error('البيانات التاريخية ليست في الشكل المتوقع');
+        }
+        
         // تحويل البيانات للرسم البياني
-        const chartData = result.data.map((item: any) => ({
-          date: new Date(item.date).toLocaleDateString(isRTL ? 'ar-EG' : 'en-US', {
+        const chartData = historicalData.map((item: any) => ({
+          date: new Date(item.date || item.dateTime).toLocaleDateString(isRTL ? 'ar-EG' : 'en-US', {
             month: 'short',
             day: 'numeric'
           }),
-          open: item.open,
-          high: item.high,
-          low: item.low,
-          close: item.close,
-          volume: item.volume,
-          fullDate: item.date
+          open: item.open || item.openPrice || 0,
+          high: item.high || item.highPrice || 0,
+          low: item.low || item.lowPrice || 0,
+          close: item.close || item.closePrice || 0,
+          volume: item.volume || 0,
+          fullDate: item.date || item.dateTime
         }));
         
         setData(chartData);

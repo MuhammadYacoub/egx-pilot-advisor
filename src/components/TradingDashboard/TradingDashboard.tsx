@@ -1,4 +1,4 @@
-
+import React, { useCallback } from 'react';
 import { MarketOverview } from './MarketOverview';
 import { TopStocks } from './TopStocks';
 import { TechnicalSummary } from './TechnicalSummary';
@@ -15,11 +15,10 @@ import { useLanguage } from '@/contexts/LanguageContext';
 import { cn } from '@/lib/utils';
 
 interface TradingDashboardProps {
-  marketData?: any;
   onStockSelect?: (stock: any) => void;
 }
 
-export const TradingDashboard = ({ marketData, onStockSelect }: TradingDashboardProps) => {
+export const TradingDashboard = ({ onStockSelect }: TradingDashboardProps) => {
   const { isRTL } = useLanguage();
   const { 
     currentQuote, 
@@ -31,13 +30,13 @@ export const TradingDashboard = ({ marketData, onStockSelect }: TradingDashboard
     refreshData
   } = useDashboardData('^CASE30');
 
-  const handleStockSelect = (symbol: string) => {
+  const handleStockSelect = useCallback((symbol: string) => {
     selectSymbol(symbol);
     // Also call the parent callback if provided
     if (onStockSelect) {
       onStockSelect({ symbol, name: symbol });
     }
-  };
+  }, [onStockSelect, selectSymbol]);
 
   return (
     <div className={cn("space-y-6", isRTL && "text-right")}>

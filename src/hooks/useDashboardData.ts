@@ -1,4 +1,5 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState, useRef } from 'react';
+import { ErrorBoundaryConfig, ErrorHandler } from '@/utils/errorHandler';
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || '/api';
 
@@ -46,32 +47,64 @@ export const useDashboardData = (defaultSymbol: string = '^CASE30'): UseDashboar
   const [technicalData, setTechnicalData] = useState<TechnicalAnalysis | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  
+  // Use ref to track component mount status
+  const isMountedRef = useRef(true);
+  
+  useEffect(() => {
+    isMountedRef.current = true;
+    return () => {
+      isMountedRef.current = false;
+    };
+  }, []);
 
   // Calculate basic technical indicators from historical data
   const calculateTechnicalIndicators = useCallback(async (symbol: string, currentPrice: number): Promise<TechnicalAnalysis> => {
     try {
       // Get historical data for calculations
       const historicalResponse = await fetch(`${API_BASE_URL}/market/historical/${symbol}?period=3mo`);
-      if (!historicalResponse.ok) throw new Error('Failed to fetch historical data');
+      if (!historicalResponse.ok) {
+        console.warn(`Historical data not available for ${symbol}, using mock data`);
+        throw new Error('Failed to fetch historical data');
+      }
       
-      const historicalData = await historicalResponse.json();
-      const prices = historicalData.data || [];
+      let historicalResult;
+      try {
+        historicalResult = await historicalResponse.json();
+      } catch (parseError) {
+        console.warn('Failed to parse historical data response:', parseError);
+        throw new Error('Invalid response format');
+      }
       
-      if (prices.length < 20) {
-        // Not enough data for full analysis, return basic mock data
+      // استخدام معالج الأخطاء الآمن للبيانات
+      const prices = ErrorBoundaryConfig.processHistoricalData(historicalResult);
+      
+      console.log(`Historical data for ${symbol}:`, {
+        totalPoints: prices.length,
+        firstPoint: prices[0],
+        lastPoint: prices[prices.length - 1]
+      });
+      
+      if (!Array.isArray(prices) || prices.length < 20) {
+        console.warn(`Insufficient historical data for ${symbol}. Found ${prices.length} data points, need at least 20 for technical analysis.`);
+        // Not enough data for full analysis, return basic mock data based on current price
         return {
-          rsi: 50 + Math.random() * 20, // 50-70 range
-          macd: Math.random() * 100 - 50, // -50 to 50
-          sma20: currentPrice * (0.98 + Math.random() * 0.04), // ±2%
-          sma50: currentPrice * (0.95 + Math.random() * 0.1), // ±5%
-          signal: currentPrice > (currentPrice * 0.98) ? 'BUY' : 'HOLD',
-          strength: 0.6 + Math.random() * 0.3, // 60-90%
+          rsi: 45 + Math.random() * 20, // 45-65 range (more realistic)
+          macd: (Math.random() - 0.5) * 10, // -5 to 5 range
+          sma20: currentPrice * (0.98 + Math.random() * 0.04), // ±2% from current
+          sma50: currentPrice * (0.95 + Math.random() * 0.1), // ±5% from current
+          signal: 'HOLD', // Conservative signal when no data
+          strength: 0.5 + Math.random() * 0.2, // 50-70% strength
           trend: 'NEUTRAL'
         };
       }
 
-      // Calculate RSI (simplified)
-      const closePrices = prices.slice(-14).map((p: any) => p.close);
+      // Calculate RSI (simplified) with safe array operations
+      const closePrices = ErrorHandler.safeArrayOperation(
+        prices.slice(-14),
+        (arr) => arr.map((p: any) => p.close || p.closePrice || 0),
+        []
+      );
       let gains = 0, losses = 0;
       for (let i = 1; i < closePrices.length; i++) {
         const change = closePrices[i] - closePrices[i - 1];
@@ -84,12 +117,12 @@ export const useDashboardData = (defaultSymbol: string = '^CASE30'): UseDashboar
       const rsi = 100 - (100 / (1 + rs));
 
       // Calculate SMAs
-      const sma20 = prices.slice(-20).reduce((sum: number, p: any) => sum + p.close, 0) / 20;
-      const sma50 = prices.slice(-50).reduce((sum: number, p: any) => sum + p.close, 0) / Math.min(50, prices.length);
+      const sma20 = prices.slice(-20).reduce((sum: number, p: any) => sum + (p.close || p.closePrice || 0), 0) / 20;
+      const sma50 = prices.slice(-50).reduce((sum: number, p: any) => sum + (p.close || p.closePrice || 0), 0) / Math.min(50, prices.length);
 
       // Calculate MACD (simplified)
-      const ema12 = prices.slice(-12).reduce((sum: number, p: any) => sum + p.close, 0) / 12;
-      const ema26 = prices.slice(-26).reduce((sum: number, p: any) => sum + p.close, 0) / Math.min(26, prices.length);
+      const ema12 = prices.slice(-12).reduce((sum: number, p: any) => sum + (p.close || p.closePrice || 0), 0) / 12;
+      const ema26 = prices.slice(-26).reduce((sum: number, p: any) => sum + (p.close || p.closePrice || 0), 0) / Math.min(26, prices.length);
       const macd = ema12 - ema26;
 
       // Determine signal
@@ -139,6 +172,8 @@ export const useDashboardData = (defaultSymbol: string = '^CASE30'): UseDashboar
 
   // Fetch quote data
   const fetchQuoteData = useCallback(async (symbol: string) => {
+    if (!isMountedRef.current) return;
+    
     setLoading(true);
     setError(null);
     
@@ -149,18 +184,27 @@ export const useDashboardData = (defaultSymbol: string = '^CASE30'): UseDashboar
       const data = await response.json();
       if (!data.success) throw new Error(data.message || 'خطأ في البيانات');
       
-      setCurrentQuote(data.data);
-      
-      // Calculate technical indicators
-      const technical = await calculateTechnicalIndicators(symbol, data.data.currentPrice);
-      setTechnicalData(technical);
+      // Only update state if component is still mounted
+      if (isMountedRef.current) {
+        setCurrentQuote(data.data);
+        
+        // Calculate technical indicators
+        const technical = await calculateTechnicalIndicators(symbol, data.data.currentPrice);
+        if (isMountedRef.current) {
+          setTechnicalData(technical);
+        }
+      }
       
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'خطأ غير متوقع';
-      setError(errorMessage);
-      console.error('Error fetching dashboard data:', err);
+      if (isMountedRef.current) {
+        const errorMessage = err instanceof Error ? err.message : 'خطأ غير متوقع';
+        setError(errorMessage);
+        console.error('Error fetching dashboard data:', err);
+      }
     } finally {
-      setLoading(false);
+      if (isMountedRef.current) {
+        setLoading(false);
+      }
     }
   }, [calculateTechnicalIndicators]);
 
