@@ -181,49 +181,55 @@ export const Header = ({
     <header className="bg-slate-800/30 backdrop-blur-sm border-b border-slate-700/50 sticky top-0 z-40 w-full">
       <div className="px-4 sm:px-6 py-3 sm:py-4">
         <div className={cn(
-          "flex items-center justify-between gap-4",
-          isRTL && "flex-row-reverse"
+          "flex items-center gap-4",
+          isRTL ? "justify-between" : "justify-between"
         )}>
           
-          {/* Mobile Menu Toggle & Logo */}
+          {/* Logo & Mobile Menu - موضع ثابت: يمين في العربية، يسار في الإنجليزية */}
           <div className={cn(
             "flex items-center gap-3",
-            isRTL && "flex-row-reverse"
+            // في العربية (RTL): order-3 يضعه في أقصى اليمين
+            // في الإنجليزية (LTR): order-1 يضعه في أقصى اليسار
+            isRTL ? "order-3" : "order-1"
           )}>
             {/* Mobile Menu Button */}
             <Button
               variant="ghost"
               size="sm"
-              className="md:hidden text-slate-300 hover:text-cyan-400"
+              className={cn(
+                "md:hidden text-slate-300 hover:text-cyan-400",
+                // في العربية: الزر بعد اللوجو، في الإنجليزية: الزر قبل اللوجو
+                isRTL ? "order-2" : "order-1"
+              )}
               onClick={onMobileMenuToggle}
             >
               {isMobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
             </Button>
 
-            {/* Logo مع العنوان */}
-            <div className="flex items-center gap-3">
+            {/* Logo - أقصى اليمين للعربية، أقصى اليسار للإنجليزية */}
+            <div className={cn(
+              "flex items-center",
+              // في العربية: اللوجو أولاً (يمين)، في الإنجليزية: اللوجو ثانياً (بعد الزر)
+              isRTL ? "order-1" : "order-2"
+            )}>
               <img 
                 src={logoSrc} 
                 alt="EGX Pilot" 
-                className="h-10 w-10 object-contain"
+                className="h-12 w-24 sm:h-12 sm:w-24 object-contain transition-all duration-200 hover:scale-105"
                 onError={(e) => {
                   // Fallback if logo fails to load
+                  console.warn('Logo failed to load:', logoSrc);
                   e.currentTarget.style.display = 'none';
                 }}
               />
-              <div className="hidden sm:block">
-                <h1 className="text-xl font-bold bg-gradient-to-r from-cyan-400 to-blue-400 bg-clip-text text-transparent">
-                  EGXPILOT
-                </h1>
-                <p className="text-xs text-slate-400 leading-none">
-                  {isRTL ? 'مستشار البورصة المصرية' : 'Egyptian Exchange Advisor'}
-                </p>
-              </div>
             </div>
           </div>
 
-          {/* Search Bar - Hidden on small screens */}
-          <div className="hidden md:flex flex-1 max-w-md mx-4">
+          {/* Search Bar - الوسط */}
+          <div className={cn(
+            "hidden md:flex flex-1 max-w-md mx-4",
+            "order-2"  // دائماً في الوسط
+          )}>
             <div className="relative w-full">
               <Search className={cn(
                 "absolute top-1/2 transform -translate-y-1/2 text-slate-400",
@@ -272,38 +278,10 @@ export const Header = ({
             </div>
           </div>
 
-          {/* Selected Stock Info - Hidden on small screens */}
-          {selectedStock && (
-            <div className="hidden lg:flex items-center gap-3 bg-slate-700/30 rounded-lg px-3 py-2">
-              <div className={cn("text-sm", isRTL && "text-right")}>
-                <div className="font-semibold text-cyan-400">
-                  {selectedStock.symbol}
-                </div>
-                <div className="text-xs text-slate-400">
-                  {selectedStock.companyName}
-                </div>
-              </div>
-              <div className={cn("text-sm", isRTL && "text-right")}>
-                <div className="text-white font-medium">
-                  {formatPrice(selectedStock.currentPrice)} {isRTL ? 'جنيه' : 'EGP'}
-                </div>
-                <div className={cn(
-                  "flex items-center gap-1 text-xs",
-                  selectedStock.priceChangePercent >= 0 ? 'text-green-400' : 'text-red-400',
-                  isRTL && "flex-row-reverse"
-                )}>
-                  <span>
-                    {selectedStock.priceChangePercent >= 0 ? '+' : ''}{selectedStock.priceChangePercent.toFixed(2)}%
-                  </span>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* Status & Controls */}
+          {/* Controls - الجانب الآخر */}
           <div className={cn(
             "flex items-center gap-2 sm:gap-3",
-            isRTL && "flex-row-reverse"
+            isRTL ? "order-1" : "order-3"  // يسار في العربية، يمين في الإنجليزية
           )}>
             
             {/* Market Status - Hidden on small screens */}

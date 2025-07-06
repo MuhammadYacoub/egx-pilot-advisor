@@ -67,8 +67,13 @@ const MainContent = () => {
 
   return (
     <div className="min-h-screen bg-background text-foreground">
-      <div className={cn("flex h-screen", isRTL ? "flex-row" : "flex-row-reverse")}>
-        {/* Sidebar - على اليمين في العربية، اليسار في الإنجليزية */}
+      <div className={cn(
+        "flex h-screen",
+        // في العربية: السايدبار على اليمين، المحتوى على اليسار
+        // في الإنجليزية: السايدبار على اليسار، المحتوى على اليمين
+        isRTL ? "flex-row-reverse" : "flex-row"
+      )}>
+        {/* Sidebar - يمين في العربية، يسار في الإنجليزية */}
         <Sidebar 
           activeView={activeView} 
           onViewChange={handleViewChange}
@@ -87,6 +92,7 @@ const MainContent = () => {
           />
         )}
         
+        {/* Main Content */}
         <div className="flex-1 flex flex-col overflow-hidden">
           <Header 
             isConnected={isConnected} 

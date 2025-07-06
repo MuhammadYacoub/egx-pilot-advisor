@@ -49,15 +49,15 @@ export const Sidebar = ({
   return (
     <div className={cn(
       "bg-slate-800/50 backdrop-blur-sm border-slate-700/50 transition-all duration-300 flex flex-col",
-      // Desktop sidebar
+      // Desktop sidebar - موضع ثابت حسب الاتجاه
       "hidden md:flex",
-      isRTL ? "border-l" : "border-r",
+      isRTL ? "border-l" : "border-r", // حدود على الجانب الداخلي
       isCollapsed ? "w-16" : "w-64",
       // Mobile sidebar - overlay
       "md:relative",
       isMobileMenuOpen && cn(
-        "fixed inset-y-0 z-40 w-64 md:hidden flex",
-        isRTL ? "right-0" : "left-0"
+        "fixed inset-y-0 z-40 w-64 md:hidden flex shadow-2xl",
+        isRTL ? "right-0" : "left-0" // يمين في العربية، يسار في الإنجليزية
       )
     )}>
       {/* Header - مبسط بدون لوجو */}
