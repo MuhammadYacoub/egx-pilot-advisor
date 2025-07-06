@@ -17,15 +17,18 @@ interface SidebarProps {
   onViewChange: (view: string) => void;
   isMobileMenuOpen?: boolean;
   onMobileMenuClose?: () => void;
+  isCollapsed?: boolean;
+  onCollapseChange?: (collapsed: boolean) => void;
 }
 
 export const Sidebar = ({ 
   activeView, 
   onViewChange, 
   isMobileMenuOpen = false,
-  onMobileMenuClose 
+  onMobileMenuClose,
+  isCollapsed = false,
+  onCollapseChange
 }: SidebarProps) => {
-  const [isCollapsed, setIsCollapsed] = useState(false);
   const { t, isRTL } = useLanguage();
 
   const menuItems = [
@@ -48,16 +51,15 @@ export const Sidebar = ({
 
   return (
     <div className={cn(
-      "bg-slate-800/50 backdrop-blur-sm border-slate-700/50 transition-all duration-300 flex flex-col",
-      // Desktop sidebar - موضع ثابت حسب الاتجاه
+      "bg-slate-800/50 backdrop-blur-sm border-slate-700/50 transition-all duration-300 flex flex-col h-full w-full",
+      // Desktop sidebar - عرض عادي
       "hidden md:flex",
       isRTL ? "border-l" : "border-r", // حدود على الجانب الداخلي
-      isCollapsed ? "w-16" : "w-64",
-      // Mobile sidebar - overlay
-      "md:relative",
+      // Mobile sidebar - overlay positioned below header
       isMobileMenuOpen && cn(
-        "fixed inset-y-0 z-40 w-64 md:hidden flex shadow-2xl",
-        isRTL ? "right-0" : "left-0" // يمين في العربية، يسار في الإنجليزية
+        "!fixed z-40 w-64 md:!hidden !flex shadow-2xl",
+        isRTL ? "right-0" : "left-0", // يمين في العربية، يسار في الإنجليزية
+        "top-[80px] bottom-0" // Start below header, extend to bottom
       )
     )}>
       {/* Header - مبسط بدون لوجو */}
@@ -75,7 +77,7 @@ export const Sidebar = ({
           )}
           {/* Desktop collapse button */}
           <button
-            onClick={() => setIsCollapsed(!isCollapsed)}
+            onClick={() => onCollapseChange?.(!isCollapsed)}
             className={cn(
               "hidden md:block p-2 rounded-lg bg-slate-700/50 hover:bg-slate-600/50 transition-colors",
               isRTL && !isCollapsed && "order-first"
@@ -99,15 +101,19 @@ export const Sidebar = ({
                 onClick={() => handleViewChange(item.id)}
                 className={cn(
                   "w-full flex items-center gap-3 px-3 py-3 rounded-lg transition-all duration-200",
+                  "min-h-[48px]", // حد أدنى للارتفاع
                   isRTL && "flex-row-reverse text-right",
                   isActive 
                     ? "bg-gradient-to-r from-cyan-500/20 to-blue-500/20 text-cyan-400 border border-cyan-500/30" 
                     : "hover:bg-slate-700/50 text-slate-300"
                 )}
+                title={item.label} // tooltip للمساعدة عند التقليص
               >
-                <Icon size={20} />
+                <Icon size={20} className="flex-shrink-0" />
                 {(!isCollapsed || isMobileMenuOpen) && (
-                  <span className="text-sm font-medium">{item.label}</span>
+                  <span className="text-sm font-medium whitespace-nowrap overflow-hidden">
+                    {item.label}
+                  </span>
                 )}
               </button>
             );
@@ -119,10 +125,17 @@ export const Sidebar = ({
       <div className="p-4 border-t border-slate-700/50">
         <button className={cn(
           "w-full flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-slate-700/50 transition-colors text-slate-300",
+          "min-h-[48px]", // حد أدنى للارتفاع
           isRTL && "flex-row-reverse text-right"
-        )}>
-          <Settings size={20} />
-          {(!isCollapsed || isMobileMenuOpen) && <span className="text-sm">{t('settings')}</span>}
+        )}
+        title={t('settings')} // tooltip للمساعدة عند التقليص
+        >
+          <Settings size={20} className="flex-shrink-0" />
+          {(!isCollapsed || isMobileMenuOpen) && (
+            <span className="text-sm whitespace-nowrap overflow-hidden">
+              {t('settings')}
+            </span>
+          )}
         </button>
       </div>
     </div>

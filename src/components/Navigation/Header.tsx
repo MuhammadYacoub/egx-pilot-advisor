@@ -178,27 +178,27 @@ export const Header = ({
   };
 
   return (
-    <header className="bg-slate-800/30 backdrop-blur-sm border-b border-slate-700/50 sticky top-0 z-40 w-full">
+    <header className="bg-slate-800/30 backdrop-blur-sm border-b border-slate-700/50 z-40 w-full">
       <div className="px-4 sm:px-6 py-3 sm:py-4">
         <div className={cn(
-          "flex items-center gap-4",
-          isRTL ? "justify-between" : "justify-between"
+          "flex items-center gap-4 justify-between w-full"
         )}>
           
-          {/* Logo & Mobile Menu - موضع ثابت: يمين في العربية، يسار في الإنجليزية */}
+          {/* Logo & Mobile Menu - موضع ديناميكي حسب الاتجاه */}
           <div className={cn(
             "flex items-center gap-3",
-            // في العربية (RTL): order-3 يضعه في أقصى اليمين
-            // في الإنجليزية (LTR): order-1 يضعه في أقصى اليسار
-            isRTL ? "order-3" : "order-1"
+            // في العربية (RTL): نضعه في البداية (يمين)
+            // في الإنجليزية (LTR): نضعه في البداية (يسار)
+            "order-1"
           )}>
-            {/* Mobile Menu Button */}
+            {/* Mobile Menu Button - ترتيب حسب الاتجاه */}
             <Button
               variant="ghost"
               size="sm"
               className={cn(
                 "md:hidden text-slate-300 hover:text-cyan-400",
-                // في العربية: الزر بعد اللوجو، في الإنجليزية: الزر قبل اللوجو
+                // في العربية: الزر بعد اللوجو
+                // في الإنجليزية: الزر قبل اللوجو
                 isRTL ? "order-2" : "order-1"
               )}
               onClick={onMobileMenuToggle}
@@ -206,10 +206,11 @@ export const Header = ({
               {isMobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
             </Button>
 
-            {/* Logo - أقصى اليمين للعربية، أقصى اليسار للإنجليزية */}
+            {/* Logo - ترتيب حسب الاتجاه */}
             <div className={cn(
               "flex items-center",
-              // في العربية: اللوجو أولاً (يمين)، في الإنجليزية: اللوجو ثانياً (بعد الزر)
+              // في العربية: اللوجو أولاً (يمين)
+              // في الإنجليزية: اللوجو ثانياً (بعد الزر)
               isRTL ? "order-1" : "order-2"
             )}>
               <img 
@@ -225,7 +226,7 @@ export const Header = ({
             </div>
           </div>
 
-          {/* Search Bar - الوسط */}
+          {/* Search Bar - الوسط دائماً */}
           <div className={cn(
             "hidden md:flex flex-1 max-w-md mx-4",
             "order-2"  // دائماً في الوسط
@@ -281,7 +282,7 @@ export const Header = ({
           {/* Controls - الجانب الآخر */}
           <div className={cn(
             "flex items-center gap-2 sm:gap-3",
-            isRTL ? "order-1" : "order-3"  // يسار في العربية، يمين في الإنجليزية
+            "order-3"  // دائماً في النهاية
           )}>
             
             {/* Market Status - Hidden on small screens */}
