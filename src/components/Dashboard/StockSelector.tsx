@@ -84,7 +84,7 @@ export const StockSelector = ({ selectedSymbol, onSymbolSelect, currentQuote }: 
         setLoading(false);
       }
     };
-
+ 
     const timeoutId = setTimeout(searchStocks, 300);
     return () => clearTimeout(timeoutId);
   }, [searchTerm]);

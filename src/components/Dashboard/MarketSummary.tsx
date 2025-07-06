@@ -56,7 +56,7 @@ export const MarketSummary = ({ quoteData, onRefresh, loading }: MarketSummaryPr
     }
     return volume.toString();
   };
-
+ 
   const getTimeAgo = (dateString: string) => {
     const now = new Date();
     const updateTime = new Date(dateString);

@@ -5,10 +5,9 @@ import { TechnicalSummary } from './TechnicalSummary';
 import { NewsPanel } from './NewsPanel';
 import { QuickActions } from './QuickActions';
 import { KPICards } from '@/components/Dashboard/KPICards';
-import { StockSelector } from '@/components/Dashboard/StockSelector';
+import { CompactMarketHeader } from '@/components/Dashboard/CompactMarketHeader';
 import { TechnicalIndicators } from '@/components/Dashboard/TechnicalIndicators';
 import { EnhancedChart } from '@/components/Dashboard/EnhancedChart';
-import { MarketSummary } from '@/components/Dashboard/MarketSummary';
 import { EGXTradingViewWidget } from '@/components/Dashboard/EGXTradingViewWidget';
 import { useDashboardData } from '@/hooks/useDashboardData';
 import { useLanguage } from '@/contexts/LanguageContext';
@@ -17,7 +16,7 @@ import { cn } from '@/lib/utils';
 interface TradingDashboardProps {
   onStockSelect?: (stock: any) => void;
 }
-
+ 
 export const TradingDashboard = ({ onStockSelect }: TradingDashboardProps) => {
   const { isRTL } = useLanguage();
   const { 
@@ -40,18 +39,13 @@ export const TradingDashboard = ({ onStockSelect }: TradingDashboardProps) => {
 
   return (
     <div className={cn("space-y-6", isRTL && "text-right")}>
-      {/* Market Summary - Featured Stock Overview */}
-      <MarketSummary 
+      {/* Compact Market Header - Combined Stock Selection & Market Summary */}
+      <CompactMarketHeader 
+        selectedSymbol={selectedSymbol}
+        onSymbolSelect={handleStockSelect}
         quoteData={currentQuote}
         onRefresh={refreshData}
         loading={loading}
-      />
-
-      {/* Stock Selector */}
-      <StockSelector 
-        selectedSymbol={selectedSymbol}
-        onSymbolSelect={handleStockSelect}
-        currentQuote={currentQuote}
       />
 
       {/* Error Message */}
